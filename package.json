@@ -1,0 +1,9 @@
+{
+  "name": "dvnb_thongbao",
+  "version": "1.0.0",
+  "description": "Telegram bot thong bao phe nhua",
+  "main": "index.js",
+  "dependencies": {
+    "node-fetch": "^2.7.0"
+  }
+}
