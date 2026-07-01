@@ -1,9 +1,10 @@
 name: Auto Check Waste Logs
 on:
   push:
-    branches: [ main ] # Chạy ngay lập tức khi bạn up code lên bản main
+    branches: [ main ]
   schedule:
-    - cron: '*/1 * * * *' # Chạy tự động chu kỳ mỗi 5 phút (Tính theo giờ UTC quốc tế)
+    - cron: '*/5 * * * *'
+  workflow_dispatch: # <--- THÊM DÒNG NÀY ĐỂ KÍCH HOẠT NÚT BẤM THỦ CÔNG
 
 jobs:
   check-and-notify:
