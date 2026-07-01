@@ -14,13 +14,15 @@ jobs:
       contents: write
 
     steps:
-    - name: Bước 1 - Tải mã nguồn về máy ảo GitHub
-      uses: actions/checkout@v4.2.2 # <--- Sử dụng phiên bản phụ mới nhất đã vá lỗi nhân Node
+    # Thay thế actions/checkout bằng lệnh clone git truyền thống bằng HTTPS
+    - name: Bước 1 - Tải mã nguồn bằng lệnh Git thuần túy
+      run: |
+        git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git .
+        git checkout ${{ github.ref_name }}
 
-    - name: Bước 2 - Thiết lập môi trường chạy Node.js
-      uses: actions/setup-node@v4.2.0 # <--- Sử dụng phiên bản phụ mới nhất đã vá lỗi nhân Node
-      with:
-        node-version: '24' # <--- Chuyển hẳn sang Node 24 trùng với môi trường của hệ thống
+    # KHÔNG dùng actions/setup-node nữa, tận dụng Node sẵn có trong máy ảo Ubuntu
+    - name: Bước 2 - Kiểm tra phiên bản Node có sẵn
+      run: node -v
 
     - name: Bước 3 - Cài đặt thư viện node-fetch
       run: npm install node-fetch@2
