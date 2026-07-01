@@ -4,34 +4,32 @@ on:
     branches: [ main ]
   schedule:
     - cron: '*/5 * * * *'
-  workflow_dispatch: # <--- THÊM DÒNG NÀY ĐỂ KÍCH HOẠT NÚT BẤM THỦ CÔNG
+  workflow_dispatch:
 
 jobs:
   check-and-notify:
     runs-on: ubuntu-latest
     
-    # Cấp quyền cho GitHub Actions được phép sửa file sent_ids.json và lưu lại lịch sử
     permissions:
       contents: write
 
     steps:
     - name: Bước 1 - Tải mã nguồn về máy ảo GitHub
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4.2.2 # <--- Sử dụng phiên bản phụ mới nhất đã vá lỗi nhân Node
 
     - name: Bước 2 - Thiết lập môi trường chạy Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v4.2.0 # <--- Sử dụng phiên bản phụ mới nhất đã vá lỗi nhân Node
       with:
-        node-version: '22'
+        node-version: '24' # <--- Chuyển hẳn sang Node 24 trùng với môi trường của hệ thống
 
-    - name: Bước 3 - Cài đặt thư viện node-fetch bản cũ để tương thích với lệnh require
+    - name: Bước 3 - Cài đặt thư viện node-fetch
       run: npm install node-fetch@2
 
     - name: Bước 4 - Chạy file Script chính
       run: node index.js
 
-    - name: Bước 5 - Lưu lại các ID phế đã gửi vào GitHub để tránh trùng lặp lần sau
+    - name: Bước 5 - Lưu lại các ID phế đã gửi
       run: |
         git config --global user.name 'XUONG NHUA AUTOMATION'
         git config --global user.email 'automation-bot@xuongnhua.com'
-        # Kiểm tra xem file sent_ids.json có thay đổi không, nếu có thì tự động commit và push lên lại kho
         git diff --quiet && git diff --staged --quiet || (git add sent_ids.json && git commit -m "Cập nhật lịch sử ID phế đã gửi" && git push)
