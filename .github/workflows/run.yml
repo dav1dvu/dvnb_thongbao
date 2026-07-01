@@ -1,0 +1,36 @@
+name: Auto Check Waste Logs
+on:
+  push:
+    branches: [ main ] # Chạy ngay lập tức khi bạn up code lên bản main
+  schedule:
+    - cron: '*/1 * * * *' # Chạy tự động chu kỳ mỗi 5 phút (Tính theo giờ UTC quốc tế)
+
+jobs:
+  check-and-notify:
+    runs-on: ubuntu-latest
+    
+    # Cấp quyền cho GitHub Actions được phép sửa file sent_ids.json và lưu lại lịch sử
+    permissions:
+      contents: write
+
+    steps:
+    - name: Bước 1 - Tải mã nguồn về máy ảo GitHub
+      uses: actions/checkout@v3
+
+    - name: Bước 2 - Thiết lập môi trường chạy Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Bước 3 - Cài đặt thư viện node-fetch bản cũ để tương thích với lệnh require
+      run: npm install node-fetch@2
+
+    - name: Bước 4 - Chạy file Script chính
+      run: node index.js
+
+    - name: Bước 5 - Lưu lại các ID phế đã gửi vào GitHub để tránh trùng lặp lần sau
+      run: |
+        git config --global user.name 'XUONG NHUA AUTOMATION'
+        git config --global user.email 'automation-bot@xuongnhua.com'
+        # Kiểm tra xem file sent_ids.json có thay đổi không, nếu có thì tự động commit và push lên lại kho
+        git diff --quiet && git diff --staged --quiet || (git add sent_ids.json && git commit -m "Cập nhật lịch sử ID phế đã gửi" && git push)
