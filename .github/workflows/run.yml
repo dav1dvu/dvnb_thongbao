@@ -16,12 +16,12 @@ jobs:
 
     steps:
     - name: Bước 1 - Tải mã nguồn về máy ảo GitHub
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Bước 2 - Thiết lập môi trường chạy Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '22'
 
     - name: Bước 3 - Cài đặt thư viện node-fetch bản cũ để tương thích với lệnh require
       run: npm install node-fetch@2
